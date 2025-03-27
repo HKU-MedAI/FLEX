@@ -32,16 +32,21 @@ This repository implements FLEX, a novel framework that enhances cross-domain ge
    git clone https://github.com/HKU-MedAI/FLEX
    cd FLEX
    ```
-2. Create and activate a virtual environment and install the dependencies:
+
+2. Create and activate a virtual environment, and install the dependencies:
    ```bash
    conda env create -f environment.yml
    conda activate flex
    ```
 
+### Install Time
+- Fresh installation with conda environment creation: ~10-15 minutes on a normal desktop computer
+- Installation of additional dependencies: ~5 minutes
+- Download of pretrained models (optional): ~10-20 minutes depending on internet speed
 
-## Data Preparation
+## Instructions for Use
 
-### Directory Structure
+### Data Preparation
 
 Prepare your data in the following structure:
 ```
@@ -72,33 +77,41 @@ prompts/
 └── ...
 ```
 
-## Usage
+### Running on Your Data
 
-### Split Data into multiple site-preserved splits
+1. Generate site-preserved Monte Carlo Cross-Validation (SP-MCCV) splits for your dataset:
+   ```bash
+   python generate_sitepreserved_splits.py
+   python generate_sp_mccv_splits.py
+   ```
 
-```bash
-python generate_sitepreserved_splits.py
-```
+2. Extract features (if not already done) using [CLAM](https://github.com/mahmoodlab/CLAM) or [TRIDENT](https://github.com/mahmoodlab/TRIDENT).
 
-### Generate Site-Preserved Multiple Cross-Validation (SP-MCCV) Split
 
-To create dataset splits that preserve site information:
+3. Train the FLEX model and evaluate the performance:
+   ```bash
+   bash ./scripts/train_flex.sh
+   ```
 
-```bash
-python generate_sp_mccv_splits.py
-```
+### Reproduction Instructions
 
-### Training FLEX with CONCH
+To reproduce the results in our paper:
+1. Download the datasets mentioned in the paper (TCGA-BRCA, TCGA-NSCLC, TCGA-STAD, TCGA-CRC)
+2. Extract features using [CLAM](https://github.com/mahmoodlab/CLAM) or [TRIDENT](https://github.com/mahmoodlab/TRIDENT).
+3. Run the following commands:
+   ```bash
+   # Generate splits
+   python generate_sitepreserved_splits.py
+   python generate_sp_mccv_splits.py
+   
+   # Train model
+   bash ./scripts/train_flex.sh
+   
+   # For each task, modify the task parameter in train_flex.sh and run the script
+   bash ./scripts/train_flex.sh
+   ```
 
-To train the FLEX model with CONCH as the foundation model, you first need to extract the features using [CLAM](https://github.com/mahmoodlab/CLAM) or [TRIDENT](https://github.com/mahmoodlab/TRIDENT), and place the features in the `features` directory under the corresponding task folder.
-
-Then, you can train the FLEX model with the following command:
-
-```bash
-bash ./scripts/train_flex.sh
-```
-
-For custom training configurations, you can modify the parameters in the script.
+4. For specific tasks or customizations, refer to the key parameters section below.
 
 ### Key Parameters
 
