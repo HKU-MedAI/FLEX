@@ -45,7 +45,6 @@ class Generic_WSI_Classification_Dataset(Dataset):
 		patient_strat=False,
 		label_col = None,
 		patient_voting = 'max',
-		survival_pred = False,
 		output_slide_ids = False,
 		sites = None,
 		):
@@ -255,14 +254,13 @@ class Generic_WSI_Classification_Dataset(Dataset):
 			assert csv_path 
 			all_splits = pd.read_csv(csv_path, dtype=self.slide_data['slide_id'].dtype)  # Without "dtype=self.slide_data['slide_id'].dtype", read_csv() will convert all-number columns to a numerical type. Even if we convert numerical columns back to objects later, we may lose zero-padding in the process; the columns must be correctly read in from the get-go. When we compare the individual train/val/test columns to self.slide_data['slide_id'] in the get_split_from_df() method, we cannot compare objects (strings) to numbers or even to incorrectly zero-padded objects/strings. An example of this breaking is shown in https://github.com/andrew-weisman/clam_analysis/tree/main/datatype_comparison_bug-2021-12-01.
 			train_split = self.get_split_from_df(all_splits, 'train')
-			val_split = self.get_split_from_df(all_splits, 'val')
 			test_split = self.get_split_from_df(all_splits, 'test')
 			try:
 				out_test_split = self.get_split_from_df(all_splits, 'out_test')
 			except:
 				out_test_split = test_split
 			
-			return [train_split, val_split, test_split, out_test_split]
+			return [train_split, test_split, out_test_split]
 
 	def get_list(self, ids):
 		return self.slide_data['slide_id'][ids]
